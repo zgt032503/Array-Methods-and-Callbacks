@@ -24,8 +24,12 @@ Use getFinals to do the following:
 hint - you should be looking at the stage key inside of the objects
 */
 
-function getFinals(/* code here */) {
-   /* code here */
+function getFinals(data) {
+    return data.filter(function(teamData){
+        if(teamData.stage.includes('final')){
+            return true
+        }
+    })
 }
 
 
@@ -36,9 +40,13 @@ Use the higher-order function called getYears to do the following:
 2. Receive a callback function getFinals from task 2 
 3. Return an array called years containing all of the years in the getFinals data set*/
 
-function getYears(/* code here */) {
-    /* code here */
-}
+function getYears(anArray, cb) {
+    let finalTeams = cb(anArray)
+    let years = finalTeams.map(function (item) {
+        return item.Year;
+    });
+        return years;
+}  
 
 
 
@@ -49,8 +57,17 @@ Use the higher-order function getWinners to do the following:
 3. Determines the winner (home or away) of each `finals` game. 
 4. Returns the names of all winning countries in an array called `winners` */ 
 
-function getWinners(/* code here */) {
-    /* code here */
+function getWinners(anArray, cb) {
+    let winners = [];
+    let finalTeams = cb(anArray);
+for (let i in finalTeams) {
+        if (finalTeams[i]['Home Team Goals'] > finalTeams[i]['Away Team Goals']) {
+            winners.push(finalTeams[i]['Home Team Name']);
+        } else if (finalTeams[i]['Home Team Goals'] < finalTeams[i]['Away Team Goals']) {
+        winners.push(finalTeams[i]['Away Team Name']);
+        }
+    }
+    return winners;
 }
 
 
@@ -65,9 +82,14 @@ Use the higher-order function getWinnersByYear to do the following:
 hint: the strings returned need to exactly match the string in step 4.
  */
 
-function getWinnersByYear(/* code here */) {
-    /* code here */
-}
+function getWinnersByYear(anArray, cb1, cb2) {
+    let year = cb1(anArray, getFinals);
+    let country = cb2(anArray, getFinals);
+    let winners = [];
+    for (let i in year) {
+        winners.push(`In ${year[i]}, ${country[i]} won the world cup!`);}
+            return winners;
+    }
 
 
 
@@ -81,9 +103,15 @@ Use the higher order function getAverageGoals to do the following:
  Example of invocation: getAverageGoals(getFinals(fifaData));
 */
 
-function getAverageGoals(/* code here */) {
-   /* code here */
-}
+function getAverageGoals(cb) {
+    let homeAverage = cb.reduce(function (acc, item) {
+        return acc + item['Home Team Goals'];
+        }, 0);
+    let awayAverage = cb.reduce(function (acc, item) {
+        return acc + item['Away Team Goals'];
+        }, 0);
+    return ((homeAverage / cb.length) + (awayAverage / cb.length)).toFixed(2)
+    }
 
 
 
